@@ -1,0 +1,20 @@
+[project]
+name = "nuclear-back"
+version = "0.1.0"
+description = "Backend REST API for the secrets finder case"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "dishka>=1.8.0",
+    "granian>=2.7.2",
+    "litestar>=2.21.0",
+    "openai>=2.26.0",
+    "pydantic-settings>=2.13.1",
+    "pymongo>=4.16.0",
+    "uvloop>=0.22.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.5",
+]
