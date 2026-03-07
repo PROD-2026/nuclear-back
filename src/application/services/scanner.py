@@ -1,5 +1,6 @@
 import os
 import re
+from dataclasses import asdict
 
 from pathspec import GitIgnoreSpec
 
@@ -57,11 +58,11 @@ class ScannerService:
                     Vulnerability(
                         file=file,
                         line=i,
-                        masked_value=str(vul.string),
-                        pattern=str(self.pattern),
-                        severity=VulnerabilitySeverity.LOW,
+                        masked_value=str(match.group(0)),
+                        pattern=self.pattern.pattern,
+                        severity=VulnerabilitySeverity.HIGH,
                     )
-                    for vul in found
+                    for match in found
                 ]
 
         await self._storage.delete(f"{report_id}.zip")
@@ -90,5 +91,16 @@ class ScannerService:
                     severity=vuln_info.severity,
                 )
             )
+
+        return res
+
+    def mask_values(self, vulnerabilities: list[Vulnerability]) -> list[Vulnerability]:
+        res = []
+        for vuln in vulnerabilities:
+            data = asdict(vuln)
+            data["masked_value"] = vuln.masked_value[:6].rjust(
+                len(vuln.masked_value), "*"
+            )
+            res.append(Vulnerability(**data))
 
         return res

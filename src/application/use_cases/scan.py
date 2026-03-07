@@ -24,6 +24,8 @@ async def perform_scan(
     except Exception as e:
         logging.error(f"Unable to recheck scan with ML: {e}")
 
+    vulnerabilities = scanner_service.mask_values(vulnerabilities)
+
     await report_service.edit(
         report_id=report_id,
         status=ReportStatus.DONE,
