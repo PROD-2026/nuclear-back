@@ -1,6 +1,6 @@
 from dataclasses import asdict
 
-from src.domain.entities.report import Report
+from src.domain.aggregates.report import Report
 from src.ports.db import IDBProvider
 from src.ports.report_repo import IReportRepository
 

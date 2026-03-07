@@ -1,10 +1,11 @@
 from collections import defaultdict
 from typing import Literal
 
-from src.domain.entities.report import FileVulnerabilities, ReportStatus, SeverityInfo
+from src.domain.aggregates.report import ReportStatus
 from src.domain.exceptions.report import ReportNotFoundError
 from src.domain.vaule_objects.pagination import Pagination
-from src.domain.vaule_objects.vulnerability import Vulnerability
+from src.domain.vaule_objects.severity import SeverityInfo
+from src.domain.vaule_objects.vulnerability import FileVulnerabilities, Vulnerability
 from src.ports.report_repo import IReportRepository, Report
 
 

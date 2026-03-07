@@ -1,6 +1,6 @@
 from abc import ABC
 
-from src.domain.entities.report import Report
+from src.domain.aggregates.report import Report
 from src.ports.repo import IRepository
 
 

@@ -15,10 +15,10 @@ from src.application.dto.reports import (
 )
 from src.application.services.uploads import UploadsService
 from src.domain.aggregates.report import Report
-from src.domain.vaule_objects.vulnerability import Vulnerability
 from src.domain.vaule_objects.pagination import Pagination
 from src.domain.vaule_objects.recommendations import Recommendations
 from src.domain.vaule_objects.report import ReportIn
+from src.domain.vaule_objects.vulnerability import Vulnerability
 from src.infrastructure.container import ReportService
 
 
