@@ -57,9 +57,9 @@ class MongoDBProvider(IDBProvider):
 
         collection = self._db[collection_name]
 
-        query = (
-            collection.find(kwargs)
-            .sort(
+        query = collection.find(kwargs)
+        if orderings:
+            query = query.sort(
                 [
                     (
                         ordering.lstrip("-"),
@@ -68,8 +68,7 @@ class MongoDBProvider(IDBProvider):
                     for ordering in (orderings or [])
                 ]
             )
-            .skip(offset)
-        )
+        query = query.skip(offset)
         if limit > 0:
             query = query.limit(limit)
 
