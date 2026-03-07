@@ -1,6 +1,6 @@
 from litestar.dto import DataclassDTO, DTOConfig
 
-from src.domain.entities.report import Report
+from src.domain.aggregates.report import Report
 
 
 class ReportStartOutDTO(DataclassDTO[Report]):

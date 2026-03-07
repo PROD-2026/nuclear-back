@@ -14,7 +14,7 @@ CORS_CONFIG = CORSConfig(allow_origins=["*"])
 
 
 @asynccontextmanager
-async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
+async def lifespan(_: Litestar) -> AsyncGenerator[None, None]:
     yield
 
 
