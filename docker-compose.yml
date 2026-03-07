@@ -2,12 +2,36 @@ services:
   mongo:
     image: mongo
     env_file: .env
+    volumes:
+      - scanner_db:/data/db
     restart: unless-stopped
 
   redis:
     image: redis
     ports:
       - "6379:6379"
+    restart: unless-stopped
+
+  ollama:
+    image: alpine/ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+
+  ollama_starter:
+    build:
+      context: .
+      target: ollama_starter
+    depends_on:
+      - ollama
+    restart: on-failure
+
+  predictions:
+    image: ml
+    depends_on:
+      ollama_starter:
+        condition: service_completed_successfully
+    env_file: .env
     restart: unless-stopped
 
   api:
@@ -17,6 +41,7 @@ services:
     depends_on:
       - mongo
       - redis
+      - predictions
     env_file: .env
     ports:
       - "8000:8000"
@@ -37,3 +62,5 @@ services:
 
 volumes:
   user_uploads:
+  scanner_db:
+  ollama_models:

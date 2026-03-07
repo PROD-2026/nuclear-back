@@ -230,6 +230,8 @@ class Settings(BaseSettings):
 
     debug: bool = False
 
+    predictions_base_url: str
+
     uploads_base_path: str
     projects_base_path: str = "/tmp"
 

@@ -13,6 +13,7 @@ from src.application.dto.reports import (
     ReportStatsDTO,
     ReportStatusDTO,
 )
+from src.application.services.recommendations import RecommendationsService
 from src.application.services.report import ReportService
 from src.application.services.uploads import UploadsService
 from src.domain.aggregates.report import Report
@@ -81,10 +82,19 @@ class ReportController(Controller):
 
     @get("/{report_id:uuid}/recommendations", return_dto=RecommendationsGetDTO)
     async def get_report_recommendations(
-        self, report_id: UUID, container: Container, use_llm: bool = False
+        self, report_id: UUID, container: Container
     ) -> Recommendations:
         report_service: ReportService = container.resolve(ReportService)
-        return Recommendations(text="TODO!")
+        recommendations_service: RecommendationsService = container.resolve(
+            RecommendationsService
+        )
+        report = await report_service.get(id=report_id)
+
+        text = await recommendations_service.get_recommendations(
+            vulnerabilities=[vuln.masked_value for vuln in report.vulnerabilities]
+        )
+
+        return Recommendations(text=text)
 
     @get("/{report_id:uuid}/stats", return_dto=ReportStatsDTO)
     async def get_report_stats(self, report_id: UUID, container: Container) -> Report:
