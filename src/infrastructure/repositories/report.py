@@ -1,6 +1,7 @@
 from dataclasses import asdict
 
 from src.domain.aggregates.report import Report
+from src.domain.vaule_objects.vulnerability import Vulnerability
 from src.ports.db import IDBProvider
 from src.ports.report_repo import IReportRepository
 
@@ -18,7 +19,11 @@ class ReportRepository(IReportRepository):
         if not doc:
             return
 
-        return Report(**doc)
+        vulnerabilities = [
+            Vulnerability(**vuln) for vuln in (doc.pop("vulnerabilities", []) or [])
+        ]
+
+        return Report(**doc, vulnerabilities=vulnerabilities)
 
     async def list(
         self,
@@ -35,7 +40,13 @@ class ReportRepository(IReportRepository):
             **kwargs,
         )
 
-        return [Report(**doc) for doc in docs]
+        reports = []
+        for doc in docs:
+            vulnerabilities = [
+                Vulnerability(**vuln) for vuln in (doc.pop("vulnerabilities", []) or [])
+            ]
+            reports.append(Report(**doc, vulnerabilities=vulnerabilities))
+        return reports
 
     async def save(self, entity: Report) -> None:
         if not await self._db.get(

@@ -1,22 +1,20 @@
+import asyncio
+
+from src.application.services.report import ReportService
+from src.application.services.scanner import ScannerService
+from src.application.use_cases.scan import perform_scan
 from src.celery_app import app
-
-
-# TODO: Реализовать
-@app.task
-def scan_archive(report_id: str, archive_path: str) -> None:
-    raise NotImplementedError
+from src.infrastructure.container import build_container
 
 
 @app.task
-def scan_files(report_id: str, extracted_dir_path: str) -> None:
-    raise NotImplementedError
+def make_report(report_id: str, whitelist: list[str], blacklist: list[str]) -> None:
+    container = build_container()
+    scanner: ScannerService = container.resolve(ScannerService)
+    report_service: ReportService = container.resolve(ReportService)
 
-
-@app.task
-def call_ml(report_id: str, raw_findings: list[dict]) -> None:
-    raise NotImplementedError
-
-
-@app.task
-def save_report(report_id: str, enriched_findings: list[dict]) -> None:
-    raise NotImplementedError
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(
+        perform_scan(scanner, report_service, report_id, whitelist, blacklist)
+    )

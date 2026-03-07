@@ -17,3 +17,7 @@ class IStorageProvider(ABC):
     @abstractmethod
     async def exists(self, path: str) -> bool:
         raise NotImplementedError
+
+    @abstractmethod
+    async def read_lines(self, path: str) -> list[str]:
+        raise NotImplementedError

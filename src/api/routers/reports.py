@@ -13,13 +13,14 @@ from src.application.dto.reports import (
     ReportStatsDTO,
     ReportStatusDTO,
 )
+from src.application.services.report import ReportService
 from src.application.services.uploads import UploadsService
 from src.domain.aggregates.report import Report
 from src.domain.vaule_objects.pagination import Pagination
 from src.domain.vaule_objects.recommendations import Recommendations
 from src.domain.vaule_objects.report import ReportIn
 from src.domain.vaule_objects.vulnerability import Vulnerability
-from src.infrastructure.container import ReportService
+from src.worker.tasks import make_report
 
 
 class ReportController(Controller):
@@ -45,7 +46,7 @@ class ReportController(Controller):
             report_id=report.id, data=await data.file.read()
         )
 
-        # TODO: send actual job to Celery
+        make_report.delay(str(report.id), data.whitelist, data.blacklist)
 
         return report
 

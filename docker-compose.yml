@@ -11,7 +11,9 @@ services:
     restart: unless-stopped
 
   api:
-    build: .
+    build:
+      context: .
+      target: base
     depends_on:
       - mongo
       - redis
@@ -21,14 +23,17 @@ services:
     volumes:
       - user_uploads:/uploads
     restart: unless-stopped
-  # TODO: Возможно для celery app стоит свой Dockerfile написать, частая практика, ну пока что так оставлю
-  # worker:
-  #   build: .
-  #   env_file: .env
-  #   command: celery -A src.celery_app worker --loglevel=info
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - redis
+
+  worker:
+    build:
+      context: .
+      target: celery
+    depends_on:
+      - redis
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - user_uploads:/uploads
 
 volumes:
   user_uploads:
