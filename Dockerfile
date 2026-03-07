@@ -1,4 +1,4 @@
-FROM python:3.14-alpine
+FROM python:3.14-alpine AS base
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -14,6 +14,11 @@ COPY uv.lock .
 RUN uv sync --no-dev
 
 COPY entrypoint.sh .
+COPY entrypoint_worker.sh .
 COPY src src
 
 ENTRYPOINT [ "ash", "entrypoint.sh" ]
+
+FROM base AS celery
+
+ENTRYPOINT [ "ash", "entrypoint_worker.sh" ]

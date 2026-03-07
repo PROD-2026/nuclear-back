@@ -10,6 +10,7 @@ dependencies = [
     "granian>=2.7.2",
     "litestar>=2.21.0",
     "openai>=2.26.0",
+    "pathspec>=1.0.4",
     "punq>=0.7.0",
     "pydantic-settings>=2.13.1",
     "pymongo>=4.16.0",
