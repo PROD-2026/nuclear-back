@@ -1,7 +1,19 @@
 services:
+  mongo:
+    image: mongo
+    env_file: .env
+    restart: unless-stopped
+
   api:
     build: .
+    depends_on:
+      - mongo
     env_file: .env
     ports:
       - "8000:8000"
+    volumes:
+      - user_uploads:/uploads
     restart: unless-stopped
+
+volumes:
+  user_uploads:

@@ -5,12 +5,15 @@ description = "Backend REST API for the secrets finder case"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "aiofiles>=25.1.0",
     "granian>=2.7.2",
     "litestar>=2.21.0",
     "openai>=2.26.0",
     "punq>=0.7.0",
     "pydantic-settings>=2.13.1",
     "pymongo>=4.16.0",
+    "redis[hiredis]>=7.3.0",
+    "taskiq-redis>=1.2.2",
     "uvloop>=0.22.1",
 ]
 

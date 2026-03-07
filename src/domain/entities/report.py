@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import StrEnum
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from src.domain.vaule_objects.severity import SeverityInfo
 from src.domain.vaule_objects.vulnerability import (
@@ -26,7 +26,6 @@ class Report:
     vulnerabilities: list[Vulnerability] | None = None
     files_with_most_vulnerabilities: list[FileVulnerabilities] | None = None
     severity_distribution: SeverityInfo | None = None
-    id: UUID = field(default_factory=uuid4)
+    id: str = field(default_factory=lambda: str(uuid4()))
 
     created_at: datetime = field(default_factory=lambda: datetime.now(tz=timezone.utc))
-    done_at: datetime = field(default_factory=lambda: datetime.now(tz=timezone.utc))
