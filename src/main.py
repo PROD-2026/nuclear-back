@@ -6,6 +6,8 @@ from litestar.config.cors import CORSConfig
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig
 
+from src.api.routers import routers
+
 OPENAPI_CONFIG = OpenAPIConfig(title="LeakSniffer API", version="1.0.0")
 LOGGING_CONFIG = LoggingConfig(log_exceptions="debug", disable_stack_trace={404})
 CORS_CONFIG = CORSConfig(allow_origins=["*"])
@@ -20,7 +22,7 @@ app = Litestar(
     openapi_config=OPENAPI_CONFIG,
     logging_config=LOGGING_CONFIG,
     cors_config=CORS_CONFIG,
-    route_handlers=[],
+    route_handlers=[routers],
     # exception_handlers=make_exception_handlers(),  # type: ignore
     lifespan=[lifespan],
 )
