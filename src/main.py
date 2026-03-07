@@ -8,7 +8,7 @@ from litestar.openapi import OpenAPIConfig
 
 from src.api.exception_handlers import make_exception_handlers
 from src.api.routers import routers
-from src.config import AppConfig
+from src.infrastructure.adapters.config import Settings
 from src.infrastructure.container import build_container
 from src.ports.db import IDBProvider
 
@@ -33,7 +33,7 @@ app = Litestar(
     openapi_config=OPENAPI_CONFIG,
     logging_config=LOGGING_CONFIG,
     cors_config=CORS_CONFIG,
-    debug=CONTAINER.resolve(AppConfig).debug,
+    debug=CONTAINER.resolve(Settings).debug,
     dependencies={"container": lambda: CONTAINER},
     route_handlers=[routers],
     exception_handlers=make_exception_handlers(),  # type: ignore

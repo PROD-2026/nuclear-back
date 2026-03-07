@@ -2,8 +2,8 @@ from punq import Container
 
 from src.application.services.report import ReportService
 from src.application.services.uploads import UploadsService
-from src.config import AppConfig
 from src.infrastructure.adapters.compression import FSCompressionProvider
+from src.infrastructure.adapters.config import Settings
 from src.infrastructure.adapters.db import IDBProvider, MongoDBProvider
 from src.infrastructure.adapters.storage import FSStorageProvider
 from src.infrastructure.repositories.report import ReportRepository
@@ -14,9 +14,9 @@ from src.ports.storage import IStorageProvider
 
 def build_container() -> Container:
     container = Container()
-    config = AppConfig()  # type: ignore
+    config = Settings()  # type: ignore
 
-    container.register(AppConfig, instance=config)
+    container.register(Settings, instance=config)
 
     # Providers
     container.register(
