@@ -1,5 +1,6 @@
 from punq import Container
 
+from src.application.services.recommendations import RecommendationsService
 from src.application.services.report import ReportService
 from src.application.services.scanner import ScannerService
 from src.application.services.uploads import UploadsService
@@ -39,7 +40,9 @@ def build_container() -> Container:
             connection_uri=config.mongo_uri, database=config.database_name
         ),
     )
-    container.register(IMLProvider, instance=MLProvider(base_url="..."))
+    container.register(
+        IMLProvider, instance=MLProvider(base_url=config.predictions_base_url)
+    )
 
     # Repositories
     container.register(
@@ -66,6 +69,12 @@ def build_container() -> Container:
             compression_provider=container.resolve(ICompressionProvider),
             ml_provider=container.resolve(IMLProvider),
             secrets_patterns=SECRET_PATTERNS,
+        ),
+    )
+    container.register(
+        RecommendationsService,
+        factory=lambda: RecommendationsService(
+            ml_provider=container.resolve(IMLProvider)
         ),
     )
 

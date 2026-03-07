@@ -22,3 +22,11 @@ ENTRYPOINT [ "ash", "entrypoint.sh" ]
 FROM base AS celery
 
 ENTRYPOINT [ "ash", "entrypoint_worker.sh" ]
+
+FROM alpine AS ollama_starter
+
+RUN apk update && apk add curl
+
+COPY entrypoint_ollama.sh .
+
+ENTRYPOINT [ "ash", "entrypoint_ollama.sh" ]

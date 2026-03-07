@@ -11,5 +11,5 @@ class IMLProvider(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_recommendations(self) -> ...:  # TODO!
+    async def get_recommendations(self, vulnerabilities: list[str]) -> str:
         raise NotImplementedError

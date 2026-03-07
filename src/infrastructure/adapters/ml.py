@@ -6,7 +6,7 @@ from src.ports.ml import IMLProvider
 
 class MLProvider(IMLProvider):
     def __init__(self, base_url: str) -> None:
-        self._client = httpx.AsyncClient(base_url=base_url)
+        self._client = httpx.AsyncClient(base_url=base_url, timeout=30)
 
     async def check_vulnerabilities(
         self, values: list[str]
@@ -26,5 +26,12 @@ class MLProvider(IMLProvider):
             for info in data["predictions"]
         ]
 
-    async def get_recommendations(self) -> ...:  # TODO!
-        return NotImplementedError
+    async def get_recommendations(self, vulnerabilities: list[str]) -> str:
+        resp = await self._client.post(
+            "/recommend", json={"text": " ".join(vulnerabilities)}
+        )
+        resp.raise_for_status()
+
+        data = resp.json()
+
+        return data["text"]
