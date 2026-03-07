@@ -1,5 +1,7 @@
+import logging
 import os
 import re
+from dataclasses import asdict
 
 from pathspec import GitIgnoreSpec
 
@@ -17,9 +19,12 @@ class ScannerService:
         ml_provider: IMLProvider,
         secrets_patterns: list[str],
     ) -> None:
-        self.pattern = re.compile(
-            "|".join(f"({pattern})" for pattern in secrets_patterns)
-        )
+        self.patterns = []
+        for pattern in secrets_patterns:
+            try:
+                self.patterns.append(re.compile(pattern))
+            except Exception as e:
+                logging.warning(f"Unable to compile pattern {pattern}: {e}")
 
         self._storage = storage_provider
         self._compression = compression_provider
@@ -52,17 +57,18 @@ class ScannerService:
                 continue
 
             for i, line in enumerate(lines):
-                found = self.pattern.finditer(line)
-                vulnerabilities += [
-                    Vulnerability(
-                        file=file,
-                        line=i,
-                        masked_value=str(vul.string),
-                        pattern=str(self.pattern),
-                        severity=VulnerabilitySeverity.LOW,
-                    )
-                    for vul in found
-                ]
+                for pattern in self.patterns:
+                    found = pattern.finditer(line)
+                    vulnerabilities += [
+                        Vulnerability(
+                            file=file,
+                            line=i,
+                            masked_value=str(match.group(0)),
+                            pattern=pattern.pattern,
+                            severity=VulnerabilitySeverity.HIGH,
+                        )
+                        for match in found
+                    ]
 
         await self._storage.delete(f"{report_id}.zip")
 
@@ -90,5 +96,16 @@ class ScannerService:
                     severity=vuln_info.severity,
                 )
             )
+
+        return res
+
+    def mask_values(self, vulnerabilities: list[Vulnerability]) -> list[Vulnerability]:
+        res = []
+        for vuln in vulnerabilities:
+            data = asdict(vuln)
+            data["masked_value"] = vuln.masked_value[:6].ljust(
+                len(vuln.masked_value), "*"
+            )
+            res.append(Vulnerability(**data))
 
         return res
