@@ -8,6 +8,7 @@ from punq import Container
 
 from src.application.dto.recommendations import RecommendationsGetDTO
 from src.application.dto.reports import (
+    ListReportDTO,
     ReportMetadataDTO,
     ReportStartOutDTO,
     ReportStatsDTO,
@@ -27,6 +28,18 @@ from src.worker.tasks import make_report
 class ReportController(Controller):
     path = "/reports"
     tags = ["Reports"]
+
+    @get("/", return_dto=ListReportDTO)
+    async def list_reports(
+        self,
+        container: Container,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> Pagination[Report]:
+        report_service: ReportService = container.resolve(ReportService)
+        reports = await report_service.list(limit=limit, offset=offset)
+
+        return Pagination(items=reports, total=len(await report_service.list()))
 
     @post(
         "/",
