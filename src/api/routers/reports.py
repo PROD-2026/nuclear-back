@@ -14,7 +14,8 @@ from src.application.dto.reports import (
     ReportStatusDTO,
 )
 from src.application.services.uploads import UploadsService
-from src.domain.entities.report import Report, Vulnerability
+from src.domain.aggregates.report import Report
+from src.domain.vaule_objects.vulnerability import Vulnerability
 from src.domain.vaule_objects.pagination import Pagination
 from src.domain.vaule_objects.recommendations import Recommendations
 from src.domain.vaule_objects.report import ReportIn

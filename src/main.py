@@ -20,7 +20,7 @@ CONTAINER = build_container()
 
 
 @asynccontextmanager
-async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
+async def lifespan(_: Litestar) -> AsyncGenerator[None, None]:
     container = app.state.container
     db: IDBProvider = container.resolve(IDBProvider)
 
